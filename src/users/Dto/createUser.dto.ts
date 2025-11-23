@@ -1,4 +1,4 @@
-import { IsDate, IsEmail, IsLowercase, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsDate, IsEmail, IsLowercase, IsNotEmpty, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class createUserDto {
@@ -17,7 +17,6 @@ export class createUserDto {
     birthDate: Date;
     @IsNotEmpty()
     @IsString()
-    @IsLowercase()
     gender: string;
     @IsNotEmpty()
     @IsString()

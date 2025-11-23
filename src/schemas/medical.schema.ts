@@ -12,10 +12,10 @@ export class Medical {
     reason: string
 
     @Prop()
-    symptoms: string
+    symptoms: Array<string>
 
     @Prop()
-    allergies: string
+    allergies: Array<string>
 
     @Prop()
     past_Medical_History: string
@@ -30,28 +30,31 @@ export class Medical {
     comments_Or_Notes: string
 
     @Prop()
-    insurance_Provider: string
-
-    @Prop()
-    insurance_policy_Id: string
-
-    @Prop()
-    insurance_Or_Private: string
-
-    @Prop()
     identity_Type: string
 
     @Prop()
     identity_Number: string
 
     @Prop()
-    phoneNumber: string
-
-    @Prop()
     identity_photo: string
 
     @Prop()
     userId: string
+
+    @Prop()
+    status: string
+
+    @Prop({required: false})
+    cancellingReason?: string
+
+    @Prop()
+    schedulingNumber: number
+
+    @Prop()
+    Disease?: string
+
+    @Prop()
+    Doctor?: string
 }
 
 export const MedicalSchema = SchemaFactory.createForClass(Medical)

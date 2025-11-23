@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsBoolean, IsDate, IsNotEmpty, IsString } from "class-validator";
+import { IsArray, IsBoolean, IsDate, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 
 export class createMedicalDto {
     @IsBoolean()
@@ -12,11 +12,11 @@ export class createMedicalDto {
     @IsString()
     reason: string
 
-    @IsString()
-    symptoms: string
+    @IsArray()
+    symptoms: Array<string>
 
-    @IsString()
-    allergies: string
+    @IsArray()
+    allergies: Array<string>
 
     @IsString()
     past_Medical_History: string
@@ -33,16 +33,6 @@ export class createMedicalDto {
     comments_Or_Notes: string
 
     @IsString()
-    insurance_Provider: string
-
-    @IsString()
-    insurance_policy_Id: string
-
-    @IsString()
-    @IsNotEmpty()
-    insurance_Or_Private: string
-
-    @IsString()
     @IsNotEmpty()
     identity_Type: string
 
@@ -57,4 +47,24 @@ export class createMedicalDto {
     @IsNotEmpty()
     @IsString()
     userId: string
+
+    @IsNotEmpty()
+    @IsString()
+    status: string
+
+    @IsOptional()
+    @IsString()
+    cancellingReason: string
+
+    @IsNumber()
+    @IsNotEmpty()
+    schedulingNumber: number
+
+    @IsString()
+    @IsOptional()
+    Disease?: string
+
+    @IsString()
+    @IsOptional()
+    Doctor?: string
 }

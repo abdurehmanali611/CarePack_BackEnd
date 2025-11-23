@@ -13,5 +13,8 @@ export class userService {
         return newUser.save()
     }
 
+    fetchUser() {
+        return this.userModel.find().exec()
+    }
     
 }
