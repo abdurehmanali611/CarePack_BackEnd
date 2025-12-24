@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -73,8 +74,6 @@ export class credentialService {
 
   async getUserByName(name: string) {
     try {
-      console.log('🔍 Searching for:', name);
-
       const nameMappings: { [key: string]: string } = {
         'dr-fatma-al-sayed': 'Dr. Fatma Al-Sayed',
       };
@@ -83,15 +82,11 @@ export class credentialService {
         nameMappings[name] ||
         name.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
 
-      console.log('🔍 Exact name to search:', exactName);
-
-      // Try exact match
       let user = await this.credentialModel
         .findOne({ Full_Name: exactName })
         .exec();
 
       if (!user) {
-        // Try case-insensitive exact match
         user = await this.credentialModel
           .findOne({
             Full_Name: { $regex: new RegExp(`^${exactName}$`, 'i') },
@@ -100,7 +95,6 @@ export class credentialService {
       }
 
       if (!user) {
-        // Last resort: search for "Fatma" in any part of the name
         user = await this.credentialModel
           .findOne({
             Full_Name: { $regex: /fatma/i },
@@ -109,7 +103,6 @@ export class credentialService {
       }
 
       if (user) {
-        console.log('✅ User found:', user.Full_Name);
         return {
           success: true,
           user: {
@@ -133,7 +126,6 @@ export class credentialService {
         error: `User "${name}" not found. Available: ${JSON.stringify(allUserNames)}`,
       };
     } catch (error) {
-      console.error('Error in getUserByName:', error);
       return { success: false, error: 'Failed to fetch user data' };
     }
   }
@@ -178,5 +170,82 @@ export class credentialService {
     if (!updated)
       throw new NotFoundException(`user with the id ${id} not found`);
     return updated;
+  }
+
+  async DeletingSchedules(id: string) {
+    const deleted = await this.credentialModel.findByIdAndDelete(id);
+    if (!deleted)
+      throw new NotFoundException(`A user with the id ${id} not found`);
+    return { message: 'Credential Deleted Successfully' };
+  }
+
+  // ADD THIS NEW METHOD FOR PATIENT TRANSFER
+  async transferPatient(
+    currentDoctorId: string,
+    newDoctorId: string,
+    patientInfoId: string,
+    updatedPatientInfo: any,
+  ) {
+    try {
+      // 1. Get the current doctor and find the patient info
+      const currentDoctor =
+        await this.credentialModel.findById(currentDoctorId);
+      if (!currentDoctor) {
+        throw new NotFoundException(
+          `Current doctor with id ${currentDoctorId} not found`,
+        );
+      }
+
+      console.log('Current Doctor:', currentDoctor);
+      console.log('Looking for patient info ID:', patientInfoId);
+
+      // Find the patient info in the current doctor's patientInfos array
+      const patientInfo = currentDoctor.patientInfos?.find(
+        (patient: any) => patient._id.toString() === patientInfoId,
+      );
+
+      console.log('Found patient info:', patientInfo);
+
+      if (!patientInfo) {
+        throw new NotFoundException(
+          `Patient info with id ${patientInfoId} not found in doctor ${currentDoctorId}`,
+        );
+      }
+
+      // 2. Remove patient info from current doctor and remove appointment date
+      await this.credentialModel.findByIdAndUpdate(currentDoctorId, {
+        $pull: {
+          patientInfos: { _id: patientInfoId },
+          AppointmentDates: patientInfo.AppointmentDate,
+        },
+      });
+
+      // 3. Add patient info to new doctor and add appointment date
+      const newDoctor = await this.credentialModel.findById(newDoctorId);
+      if (!newDoctor) {
+        throw new NotFoundException(
+          `New doctor with id ${newDoctorId} not found`,
+        );
+      }
+
+      const updatedNewDoctor = await this.credentialModel.findByIdAndUpdate(
+        newDoctorId,
+        {
+          $push: {
+            patientInfos: updatedPatientInfo,
+            AppointmentDates: patientInfo.AppointmentDate,
+          },
+        },
+        { new: true },
+      );
+
+      return {
+        message: 'Patient transferred successfully',
+        newDoctor: updatedNewDoctor,
+      };
+    } catch (error) {
+      console.error('Error transferring patient:', error);
+      throw error;
+    }
   }
 }

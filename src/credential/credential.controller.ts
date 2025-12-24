@@ -84,8 +84,30 @@ export class credentialController {
     return this.credentialservice.deletingCredential(id);
   }
 
+  @Delete('patientInfos/:id')
+  DeletingSchedules(@Param('id') id: string) {
+    return this.credentialservice.DeletingSchedules(id)
+  }
+
   @Post('verify')
   async verifyCredentials(@Body() body: { passKey: string }) {
     return this.credentialservice.verifyCredentials(body.passKey);
+  }
+
+  @Post('transfer-patient')
+  async transferPatient(
+    @Body() body: {
+      currentDoctorId: string;
+      newDoctorId: string;
+      patientInfoId: string;
+      updatedPatientInfo: any;
+    },
+  ) {
+    return this.credentialservice.transferPatient(
+      body.currentDoctorId,
+      body.newDoctorId,
+      body.patientInfoId,
+      body.updatedPatientInfo,
+    );
   }
 }
