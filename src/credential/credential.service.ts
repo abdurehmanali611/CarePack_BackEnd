@@ -6,7 +6,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { createCredentialDto } from './Dto/createCredential.dto';
-import { Credential } from 'src/schemas/credential.schema';
+import { Credential } from '../schemas/credential.schema';
 import { UpdateCredentialDto } from './Dto/updateCredential.dto';
 
 @Injectable()

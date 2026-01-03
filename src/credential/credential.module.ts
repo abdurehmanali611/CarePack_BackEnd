@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
-import { Credential, credentialSchema } from "src/schemas/credential.schema";
+import { Credential, credentialSchema } from "../schemas/credential.schema";
 import { credentialService } from "./credential.service";
 import { credentialController } from "./credential.controller";
 

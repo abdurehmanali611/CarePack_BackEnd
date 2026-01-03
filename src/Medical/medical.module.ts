@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
-import { Medical, MedicalSchema } from "src/schemas/medical.schema";
+import { Medical, MedicalSchema } from "../schemas/medical.schema";
 import { MedicalService } from "./medical.service";
 import { medicalController } from "./medical.controller";
 
