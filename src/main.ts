@@ -15,7 +15,7 @@ async function bootstrap() {
   },
   }))
   app.enableCors({
-    origin: ['https://care-pack-red.vercel.app','http://localhost:3000', 'http://localhost:5173'],
+    origin: ['https://care-pack-two.vercel.app','http://localhost:3000', 'http://localhost:5173'],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
   })
   await app.listen(process.env.PORT ?? 4000);
